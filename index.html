@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Fallout Shelter Visualizer</title>
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>☢️</text></svg>">
+  <link rel="stylesheet" href="css/style.css">
+  <meta name="author" content="nxvxl">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+  <main id="main" class="container">
+    <section id="sidebar">
+      <div class="card details">
+        <header>
+          <h1>Fallout Shelter Visualizer</h1>
+        </header>
+        <div class="card">
+          <label>
+            Upload <code>.sav</code> file:
+            <input type="file" name="sav_file" id="sav_file" />
+          </label>
+        </div>
+        <div class="card">
+          <table>
+            <tbody>
+              <tr>
+                <th>Vault</th>
+                <td>:</td>
+                <td id="vaultName"></td>
+              </tr>
+              <tr>
+                <th>Dwellers</th>
+                <td>:</td>
+                <td id="dwellersCount"></td>
+              </tr>
+              <tr>
+                <th>Mode</th>
+                <td></td>
+                <td>
+                  <select name="mode" id="mode">
+                    <option value="network" selected>Network</option>
+                    <option value="tree">Tree</option>
+                  </select>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <h2>Partner Checker</h2>
+          <div class="partner-container">
+            <form id="partnerForm">
+              <table>
+                <tbody>
+                  <tr>
+                    <th>Male</th>
+                    <td>&ensp;</td>
+                    <td>
+                      <select name="male" id="male">
+                        <option selected>-</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Female</th>
+                    <td>&ensp;</td>
+                    <td>
+                      <select name="female" id="female">
+                        <option selected>-</option>
+                      </select>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div id="result"> </div>
+            </form>
+            <div>
+              <div class="compability-result">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="graph">
+      <div id="mynetwork" class="card"></div>
+    </section>
+  </main>
+  <script src="js/vis-network.min.js"></script>
+  <script src="js/aes.js"></script>
+  <script id="code" src="js/main.js"></script>
+</body>
+
+</html>

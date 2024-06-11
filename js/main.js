@@ -153,7 +153,7 @@ function drawVisNetwork() {
     background: "black",
     border: "#00FF00",
     highlight: {
-      background: "#00FF00",
+      background: "lightgreen",
       border: "lightgreen"
     }
   }
@@ -168,7 +168,7 @@ function drawVisNetwork() {
         strokeWidth: 2,
         strokeColor: "darkgreen",
       },
-      level: mode === "tree" ? 0 : undefined,
+      level: mode === "tree" ? walkAncestors(d.serializeId) * 2 : undefined,
     }])
   )
 
@@ -177,24 +177,30 @@ function drawVisNetwork() {
   let edges = []
   if (mode === "tree") {
     dwellers.forEach(d => {
-      const [fatherId, motherId] = d.relations.ascendants
-      if (fatherId === -1 && motherId === -1) return
+      let [fid, mid] = d.relations.ascendants
+      if (fid === d.serializeId) fid = -1
+      if (mid === d.serializeId) mid = -1
+      if (fid === -1 && mid === -1) return
 
 
-      const nodeId = `${fatherId}_${motherId}`
+      const nodeId = `${fid}_${mid}`
       let edgeNode = nodes[nodeId]
       if (!edgeNode) {
-        const fatherNode = nodes[fatherId]
-        const motherNode = nodes[motherId]
+        const fatherNode = nodes[fid]
+        const motherNode = nodes[mid]
 
         const level = Math.max(fatherNode?.level ?? 0, motherNode?.level ?? 0) + 1
         nodes[nodeId] = {
           id: nodeId,
-          shape: "dot",
+          shape: "triangleDown",
           size: 10,
           color: {
             background: "#00FF00",
             border: "#00FF00",
+            highlight: {
+              background: "lightgreen",
+              border: "lightgreen",
+            }
           },
           level,
         }
@@ -202,19 +208,16 @@ function drawVisNetwork() {
         edgeNode = nodes[nodeId]
       }
 
-      const myNode = nodes[d.serializeId]
-      myNode.level = edgeNode.level + 1
-
-      if (fatherId !== -1) {
+      if (fid !== -1) {
         edges.push({
-          from: fatherId,
+          from: fid,
           to: nodeId,
         })
       }
 
-      if (motherId != -1) {
+      if (mid != -1) {
         edges.push({
-          from: motherId,
+          from: mid,
           to: nodeId,
         })
       }
@@ -228,13 +231,10 @@ function drawVisNetwork() {
 
     options = {
       edges: {
-        arrows: {
-          to: true
-        },
         smooth: {
           type: 'cubicBezier',
           forceDirection: 'vertical',
-          roundness: 1
+          roundness: 1,
         },
         color: { color: "#00FF00", highlight: "lightgreen" },
       },
@@ -244,7 +244,7 @@ function drawVisNetwork() {
           nodeSpacing: 150,
         },
       },
-      physics: false
+      physics: true
     };
   } else if (mode === "network") {
     const set = []
@@ -273,6 +273,7 @@ function drawVisNetwork() {
     edges: new vis.DataSet(edges),
   };
   network = new vis.Network(container, data, options);
+  network.on("click", console.log)
 }
 
 function setup(data) {
@@ -358,6 +359,23 @@ function drawRelations(id) {
         }
       })
   })
+}
+
+function walkAncestors(id, x = 0) {
+  const dweller = dwellersObj[id]
+  const [fid, mid] = dweller.relations.ascendants
+
+  let father = 0;
+  if (fid !== -1 && fid !== id) {
+    father = 1 + walkAncestors(fid, x + 1)
+  }
+
+  let mother = 0
+  if (mid !== -1 && mid !== id) {
+    mother = 1 + walkAncestors(mid, x + 1)
+  }
+
+  return Math.max(father, mother)
 }
 
 window.addEventListener("DOMContentLoaded", load)

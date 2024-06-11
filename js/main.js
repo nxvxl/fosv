@@ -105,6 +105,7 @@ function handleChangeDropdown() {
   resultDiv.style.backgroundColor = "rgba(0, 0, 0, 0)"
   resultDiv.innerHTML = ""
 
+  const nodes = [maleSelection.value, femaleSelection.value]
   const male = dwellersObj[maleSelection.value]
   const female = dwellersObj[femaleSelection.value]
   const ma = male?.relations?.ascendants?.filter(a => a !== -1) || []
@@ -125,26 +126,28 @@ function handleChangeDropdown() {
     },
   })
 
-  const directRelative = (ma.includes(female?.serializeId)) || (fa.includes(male?.serializeId))
-  if (directRelative) {
-    resultDiv.style.backgroundColor = "red"
-    return resultDiv.innerHTML = "<p>Parent / Child</p>"
-  }
-
   let result = "<p>OK!</p>"
   let backgroundColor = "#00FF00"
-  for (const a of ma) {
-    console.log({ a })
-    if (fa.includes(a)) {
-      const relative = dwellersObj[a]
-      backgroundColor = "red"
-      result = `<p>Family with <span class="highlight">${fullname(relative)}</span></p>`
-      break
+
+  const directRelative = (ma.includes(female?.serializeId)) || (fa.includes(male?.serializeId))
+  if (directRelative) {
+    backgroundColor = "red"
+    result = "<p>Parent / Child</p>"
+  } else {
+    for (const a of ma) {
+      if (fa.includes(a)) {
+        nodes.push(a)
+        const relative = dwellersObj[a]
+        backgroundColor = "red"
+        result = `<p>Family with <span class="highlight">${fullname(relative)}</span></p>`
+        break
+      }
     }
   }
 
   resultDiv.style.backgroundColor = backgroundColor
   resultDiv.innerHTML = result
+  network.selectNodes(nodes, false)
 }
 
 function drawVisNetwork() {

@@ -369,12 +369,12 @@ function walkAncestors(id, x = 0) {
   const [fid, mid] = dweller.relations.ascendants
 
   let father = 0;
-  if (fid !== -1 && fid !== id) {
+  if (fid > -1 && fid !== id) {
     father = 1 + walkAncestors(fid, x + 1)
   }
 
   let mother = 0
-  if (mid !== -1 && mid !== id) {
+  if (mid > -1 && mid !== id) {
     mother = 1 + walkAncestors(mid, x + 1)
   }
 

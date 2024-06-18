@@ -183,7 +183,7 @@ function drawVisNetwork() {
       let [fid, mid] = d.relations.ascendants
       if (fid === d.serializeId) fid = -1
       if (mid === d.serializeId) mid = -1
-      if (fid === -1 && mid === -1) return
+      if (fid <= -1 && mid <= -1) return
 
 
       const nodeId = `${fid}_${mid}`
@@ -276,7 +276,10 @@ function drawVisNetwork() {
     edges: new vis.DataSet(edges),
   };
   network = new vis.Network(container, data, options);
-  network.on("click", console.log)
+  network.on("click", (evt) => {
+    const dweller = dwellersObj[evt.nodes[0]]
+    console.log(evt, dweller)
+  })
 }
 
 function setup(data) {
